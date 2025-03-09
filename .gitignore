@@ -1,0 +1,28 @@
+# Environnement virtuel
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Fichiers de configuration sensibles
+.env
+
+# Fichiers de base de données
+*.sqlite3
+
+# Fichiers compilés Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Fichiers de logs
+*.log
+
+# Fichiers de configuration de l'éditeur
+.vscode/
+.idea/
+
+# Fichiers de configuration Docker
+docker-compose.yml
