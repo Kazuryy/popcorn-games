@@ -13,9 +13,30 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Read version from file
-        id: get_version
-        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+      - name: Read backend version
+        id: get_backend_version
+        run: |
+          if [ -f backend/VERSION ]; then
+            echo "BACKEND_VERSION=$(cat backend/VERSION)" >> $GITHUB_ENV
+          else
+            echo "ERROR: backend/VERSION file not found!"
+            exit 1
+          fi
+
+      - name: Read frontend version
+        id: get_frontend_version
+        run: |
+          if [ -f frontend/VERSION ]; then
+            echo "FRONTEND_VERSION=$(cat frontend/VERSION)" >> $GITHUB_ENV
+          else
+            echo "ERROR: frontend/VERSION file not found!"
+            exit 1
+          fi
+
+      - name: Debug Versioning
+        run: |
+          echo "Backend version: ${{ env.BACKEND_VERSION }}"
+          echo "Frontend version: ${{ env.FRONTEND_VERSION }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -28,22 +49,29 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: Verify Docker Hub Login
+        run: docker info | grep "Username"
+
       - name: Build and push backend Docker image
         run: |
-            IMAGE_NAME=${{ secrets.DOCKER_USERNAME}}/popcorn-games-backend
-            VERSION=${{ env.VERSION }}
+            IMAGE_NAME=finnick5/popcorn-games-backend
+            VERSION=${{ env.BACKEND_VERSION }}
 
-            docker build -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest -f ./backend/Dockerfile ./backend
+            echo "Building backend image: $IMAGE_NAME:$VERSION and $IMAGE_NAME:latest"
+
+            docker build -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest -f ./backend/dockerfile ./backend
 
             docker push $IMAGE_NAME:$VERSION
             docker push $IMAGE_NAME:latest
 
       - name: Build and push frontend Docker image
         run: |
-            IMAGE_NAME=${{ secrets.DOCKER_USERNAME}}/popcorn-games-frontend
-            VERSION=${{ env.VERSION }}
+            IMAGE_NAME=finnick5/popcorn-games-frontend
+            VERSION=${{ env.FRONTEND_VERSION }}
 
-            docker build -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest -f ./frontend/Dockerfile ./frontend
+            echo "Building frontend image: $IMAGE_NAME:$VERSION and $IMAGE_NAME:latest"
+
+            docker build -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest -f ./frontend/dockerfile ./frontend
 
             docker push $IMAGE_NAME:$VERSION
             docker push $IMAGE_NAME:latest
