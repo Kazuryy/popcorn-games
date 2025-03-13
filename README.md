@@ -1,6 +1,6 @@
 # Popcorn Games
 
-Dans ce projet, nous allons développer un site web de type SaaS pour reproduire les jeux présentés dans l'émission Popcorn de Domingo.
+Dans ce projet, nous allons développer un site web de type SAAS pour reproduire les jeux présentés dans l'émission Popcorn de Domingo.
 
 ## Fonctionnalités
 
