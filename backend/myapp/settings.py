@@ -11,7 +11,17 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+from dotenv import load_dotenv
+import os
+
+STATIC_URL = 'static/'
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,14 +30,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# Détection de l'environnement
+DJANGO_ENV = os.getenv("DJANGO_ENV", "build")
+
+# ✅ Utiliser une clé temporaire si on est en phase de build
+if DJANGO_ENV == "build":
+    SECRET_KEY = "temp-secret-key"
+else:
+    SECRET_KEY = os.getenv("SECRET_KEY")
+
+# ✅ Vérifier que SECRET_KEY est bien défini en prod
+if not SECRET_KEY and DJANGO_ENV != "build":
+    raise ValueError("SECRET_KEY must be set in the environment variables")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1')
 
 ALLOWED_HOSTS = [
     "web.popcorn-games.orb.local",
+    "localhost",
 ]
 
 
@@ -40,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -51,6 +72,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
 ]
 
 ROOT_URLCONF = 'myapp.urls'
