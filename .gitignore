@@ -12,6 +12,9 @@ venv.bak/
 # Fichiers de base de données
 *.sqlite3
 
+# Fichiers système macOS
+.DS_Store
+
 # Fichiers compilés Python
 __pycache__/
 *.py[cod]
