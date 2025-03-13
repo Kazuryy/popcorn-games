@@ -35,7 +35,3 @@ Dans ce projet, nous allons développer un site web de type SAAS pour reproduire
 ## Contribution
 
 Les contributions sont les bienvenues ! Veuillez soumettre une pull request ou ouvrir une issue pour discuter des changements que vous souhaitez apporter.
-
-## Licence
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
