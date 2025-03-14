@@ -1,7 +1,12 @@
 import React from 'react';
+import Page from '../components/Page';
 
 function Team() {
-  return <h1>Team Build</h1>;
+  return (
+    <Page>
+      <div>Page pour créer une équipe pour jouer.</div>
+    </Page>
+  );
 }
 
 export default Team;

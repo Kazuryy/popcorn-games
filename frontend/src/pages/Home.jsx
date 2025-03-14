@@ -1,8 +1,10 @@
 import React from 'react';
 import Card from '../components/Card';
+import Page from '../components/Page';
 
 function Home() {
   return (
+    <Page>
     <div className='pt-6'>
       <div className="container mx-auto mt-4">
         <h1 className="text-4xl font-bold text-center">Jouer aux jeux de Popcorn avec ses amis</h1>
@@ -27,6 +29,7 @@ function Home() {
         {/* Ajoutez d'autres cartes ici */}
       </div>
     </div>
+    </Page>
   );
 }
 
