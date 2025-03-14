@@ -3,6 +3,8 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Team from './pages/Team';
 import Tunnel from './pages/Tunnel';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
 import './App.css';
 
 function App() {
@@ -14,6 +16,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/team" element={<Team />} />
           <Route path="/tunnel" element={<Tunnel />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
