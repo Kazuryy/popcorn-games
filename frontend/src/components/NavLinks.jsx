@@ -6,6 +6,8 @@ function NavLinks() {
     <>
     
       <Link to="/team" className="btn btn-ghost">Team</Link>
+
+      <Link to="/login" className="btn btn-ghost">Login</Link>
       
       <Link to="/profile" className="btn btn-circle btn-ghost">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block h-5 w-5 stroke-current">
