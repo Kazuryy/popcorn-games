@@ -5,6 +5,7 @@ import Team from './pages/Team';
 import Tunnel from './pages/Tunnel';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
+import ManageGame from './pages/ManageGame';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/tunnel" element={<Tunnel />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/manage-game" element={<ManageGame />} />
         </Routes>
       </div>
     </Router>
