@@ -1,21 +1,40 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import Card from '../components/Card';
-import Page from '../components/Page';
-import imagetunnel from '../assets/tunnel.png';
-import imagemots from '../assets/les-mots-interdits.png';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie";
+import Card from "../components/Card";
+import Page from "../components/Page";
+import imagetunnel from "../assets/tunnel.png";
+import imagemots from "../assets/les-mots-interdits.png";
 
 function Home() {
   const [gameId, setGameId] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedGameId = Cookies.get("gameId");
+    if (storedGameId) {
+      setGameId(storedGameId);
+      console.log("✅ Cookie détecté au chargement :", storedGameId);
+    }
+  }, []);
 
   const handleCreateGame = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/create_game/');
-      setGameId(response.data.game_id);
-      // Vous pouvez également rediriger l'utilisateur vers la page de la partie
-      // window.location.href = `/game/${response.data.game_id}`;
+      const response = await axios.post("http://localhost:8000/api/create_game/");
+      const gameId = response.data.game_id;
+      setGameId(gameId);
+
+      // ✅ Stocker l'ID du jeu dans un cookie
+      Cookies.set("gameId", gameId, { expires: 1, secure: true, sameSite: "Lax" });
+
+      console.log("🎉 Cookie créé :", Cookies.get("gameId"));
+
+      // ✅ Rediriger vers la page de gestion de la partie
+      navigate("/manage-game");
+
     } catch (error) {
-      console.error('There was an error creating the game!', error);
+      console.error("❌ Erreur lors de la création de la partie !", error);
     }
   };
 
@@ -29,9 +48,9 @@ function Home() {
             <button className="btn btn-primary">Rejoindre une partie</button>
             <button className="btn btn-secondary" onClick={handleCreateGame}>Créer une partie</button>
           </div>
-          {gameId && <p className="text-center mt-4">Game ID: {gameId}</p>}
+          {gameId && <p className="text-center mt-4">Partie en cours : {gameId}</p>}
         </div>
-        
+
         <hr className="my-8 border-gray-300" />
         <div className="flex flex-wrap gap-4 justify-center">
           <Card
@@ -48,7 +67,6 @@ function Home() {
             buttonText="Jouer"
             to="/team"
           />
-          {/* Ajoutez d'autres cartes ici */}
         </div>
       </div>
     </Page>
