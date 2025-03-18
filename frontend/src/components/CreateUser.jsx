@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Login() {
+function CreateUser() {
     return (
         <div className="flex flex-col items-center bg-gray-100 px-4">
             <div className="w-full max-w-sm bg-white p-7 rounded-lg shadow-md mt-30">
@@ -33,4 +33,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default CreateUser;

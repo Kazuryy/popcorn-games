@@ -1,12 +1,12 @@
 import React from 'react';
 import Page from '../components/Page';
-import Login from '../components/Login';
+import CreateUser from '../components/CreateUser';
 
 
 function Profile() {
     return (
         <Page>
-            <Login></Login>
+            <CreateUser></CreateUser>
         </Page>
     );
 }

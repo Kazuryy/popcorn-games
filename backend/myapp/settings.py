@@ -55,13 +55,14 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "corsheaders",
+    'myapp',
 ]
 
 MIDDLEWARE = [
@@ -72,12 +73,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost",
-]
+
+# Configuration CORS dynamique
+if os.getenv("DJANGO_ENV") == "production":
+    CORS_ALLOWED_ORIGINS = [
+        "https://play.popcorn-games.duckdns.org",  # ✅ URL de ton frontend en production
+    ]
+else:
+    CORS_ALLOW_ALL_ORIGINS = True  # ✅ En dev, tout est autorisé
 
 ROOT_URLCONF = 'myapp.urls'
 
