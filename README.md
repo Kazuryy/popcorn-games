@@ -30,7 +30,7 @@ Dans ce projet, nous allons développer un site web de type SAAS pour reproduire
     ```bash
     npm run dev
     ```
-2. Ouvrez votre navigateur et accédez à `http://localhost:3000`
+2. Ouvrez votre navigateur et accédez à `http://localhost:5173`
 
 ## Contribution
 
