@@ -26,12 +26,25 @@ const ManageGame = () => {
   }, [gameId, navigate]);
 
   const handleQuitGame = async () => {
+    const confirmQuit = window.confirm("Êtes-vous sûr de vouloir supprimer cette partie ?");
+    if (!confirmQuit) return;
+  
     try {
-      await axios.delete(`http://localhost:8000/api/games/${gameId}/delete/`);  // ✅ Supprime la partie
-      Cookies.remove("gameId");  // ✅ Supprime le cookie
-      navigate("/");  // ✅ Redirige vers la home
+      const response = await axios.delete(
+        `http://localhost:8000/api/games/${gameId}/delete/`,
+        { withCredentials: true }  // ✅ Assure que les cookies sont bien envoyés
+      );
+  
+      if (response.status === 200) {
+        alert("✅ Partie supprimée !");
+        Cookies.remove("gameId");
+        navigate("/");
+      } else {
+        alert(response.data.error);
+      }
     } catch (error) {
-      console.error("❌ Erreur lors de la suppression de la partie :", error);
+      console.error("❌ Erreur lors de la suppression :", error);
+      alert("Une erreur est survenue.");
     }
   };
 
@@ -41,8 +54,8 @@ const ManageGame = () => {
     <div>
       <h2>Gestion de la Partie</h2>
       <p>Game ID: {gameId}</p>
-      <p>Titre : {game.title}</p>
-      <p>Date de création : {game.created_at}</p>
+      <p>Titre : {game.title || "Titre non disponible"}</p>
+      <p>Date de création : {new Date(game.created_at).toLocaleString()}</p>
       <button className="btn btn-danger" onClick={handleQuitGame}>
         Quitter la Partie
       </button>
