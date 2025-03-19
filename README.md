@@ -17,7 +17,7 @@ Dans ce projet, nous allons développer un site web de type SAAS pour reproduire
     ```
 2. Accédez au répertoire du projet :
     ```bash
-    cd popcorn-games
+    cd popcorn-games/frontend
     ```
 3. Installez les dépendances :
     ```bash
@@ -28,7 +28,7 @@ Dans ce projet, nous allons développer un site web de type SAAS pour reproduire
 
 1. Démarrez le serveur de développement :
     ```bash
-    npm start
+    npm run dev
     ```
 2. Ouvrez votre navigateur et accédez à `http://localhost:3000`
 
