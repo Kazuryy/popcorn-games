@@ -141,14 +141,14 @@ function Home() {
             image={imagetunnel}
             title="Le Tunnel"
             description="Trouve la bonne réponse et choisis entre prendre tes points et continuer de trouver les réponses dans ton tunnel."
-            buttonText="Jouer"
+            buttonText="Plus d'infos"
             to="/tunnel"
           />
           <Card
             image={imagemots}
             title="Les Mots Interdits"
             description="Trouve le mot de ton partenaire sans dire l'un des mots interdits."
-            buttonText="Jouer"
+            buttonText="Plus d'infos"
             to="/team"
           />
         </div>
