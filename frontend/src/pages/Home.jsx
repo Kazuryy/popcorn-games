@@ -67,34 +67,11 @@ function Home() {
       Cookies.set("gameId", gameId, { expires: 1 });
   
       console.log("🎉 Rejoint la partie :", gameId);
-      navigate("/manage-game");
+      navigate("/play");
     } catch (error) {
       console.error("❌ Erreur lors de la connexion à la partie :", error);
     }
   };
-
-  const handleQuitGame = async () => {
-  const confirmQuit = window.confirm("Êtes-vous sûr de vouloir supprimer cette partie ?");
-  if (!confirmQuit) return;
-
-  try {
-    const response = await axios.delete(
-      `http://localhost:8000/api/games/${gameId}/delete/`,
-      { withCredentials: true }  // ✅ Assure que les cookies sont bien envoyés
-    );
-
-    if (response.status === 200) {
-      alert("✅ Partie supprimée !");
-      Cookies.remove("gameId");
-      navigate("/");
-    } else {
-      alert(response.data.error);
-    }
-  } catch (error) {
-    console.error("❌ Erreur lors de la suppression :", error);
-    alert("Une erreur est survenue.");
-  }
-};
 
   return (
     <Page>
