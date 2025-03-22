@@ -1,12 +1,12 @@
 import axios from "axios";
 
-// 💡 Choix dynamique : runtime (window.env) ou build-time (import.meta.env)
-const baseURL =
-  window?.env?.VITE_API_URL || import.meta.env.VITE_API_URL || "http://localhost:8000";
+// 🔁 Utilisation dynamique de l'URL API
+const baseURL = window?.env?.VITE_API_URL;
 
+// 🔧 Crée une instance Axios réutilisable
 const api = axios.create({
   baseURL,
-  withCredentials: true,
+  withCredentials: true,  // ⚠️ Important si tu gères des cookies
 });
 
 export default api;
