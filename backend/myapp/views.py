@@ -3,30 +3,42 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import Game
+from .models import Game, Player
+import random
 
+
+def generate_unique_code():
+    while True:
+        code = str(random.randint(100000, 999999))
+        if not Game.objects.filter(code=code).exists():
+            return code
+      
+        
 ### 📌 1️⃣ CRÉATION DE PARTIE (MJ)
 @api_view(['POST'])
 def create_game(request):
     player_id = request.COOKIES.get("playerId")
 
-    # ✅ Si le joueur n'a pas encore d'ID, on lui en génère un
+    # ✅ Génère un playerId s'il n'existe pas
     if not player_id:
         player_id = str(uuid.uuid4())
-    
-    response = JsonResponse({'game_id': None, 'is_master': True})  # Temporaire
 
-    # ✅ Assigne le joueur comme créateur de la partie
-    game = Game.objects.create(creator_id=player_id)
-    response = JsonResponse({'game_id': game.id, 'is_master': True})
+    # ✅ Génère un code unique pour la partie
+    code = generate_unique_code()
 
-    # ✅ Stocke `playerId` dans un cookie sécurisé
+    # ✅ Crée la partie avec cet ID comme MJ
+    game = Game.objects.create(creator_id=player_id, code=code)
+
+    # ✅ Crée un joueur associé avec le pseudo "Game Master"
+    Player.objects.create(username="Game Master", player_id=player_id, game=game)
+
+    # ✅ Réponse avec cookie mis à jour
+    response = JsonResponse({'game_id': game.id, 'code': code, 'is_master': True})
     response.set_cookie(
         "playerId", player_id,
-        max_age=7 * 24 * 60 * 60,
+        max_age=604800,  # 7 jours
         secure=True, httponly=True, samesite="Lax"
     )
-    
     return response
 
 ### 📌 2️⃣ SUPPRESSION D'UNE PARTIE (MJ UNIQUEMENT)
@@ -68,12 +80,15 @@ def get_game(request, game_id):
         player_id = str(uuid.uuid4())
 
     game = get_object_or_404(Game, id=game_id)
+
     is_master = (game.creator_id == player_id)  # ✅ Vérifie si le joueur est MJ
 
     response = JsonResponse({
         "game_id": game.id,
         "created_at": game.created_at,
-        "is_master": is_master
+        "is_master": is_master,
+        "creator_id": game.creator_id,
+        "code": game.code
     })
 
     # ✅ Stocke `playerId` dans un cookie sécurisé
@@ -110,3 +125,67 @@ def get_or_create_player_id(request):
         samesite="Lax",  # 🔒 Protection CSRF
     )
     return response
+
+@api_view(['GET'])
+def list_players(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    players = game.players.all().values('username', 'player_id')  # ✅ player_id est requis ici
+    return JsonResponse({"players": list(players)})
+
+@api_view(['POST'])
+def join_game(request, game_id):
+    player_id = request.COOKIES.get("playerId")
+    username = request.data.get("username")
+
+    if not player_id:
+        player_id = str(uuid.uuid4())
+
+    if not username:
+        return JsonResponse({"error": "Pseudo requis"}, status=400)
+
+    game = get_object_or_404(Game, id=game_id)
+
+    # Évite les doublons
+    if not Player.objects.filter(player_id=player_id, game=game).exists():
+        Player.objects.create(username=username, player_id=player_id, game=game)
+
+    response = JsonResponse({"message": "Joueur ajouté"})
+    response.set_cookie(
+        "playerId", player_id,
+        max_age=7 * 24 * 60 * 60,
+        secure=True, httponly=True, samesite="Lax"
+    )
+    return response
+
+@api_view(['PUT'])
+def update_username(request, game_id):
+    player_id = request.COOKIES.get("playerId")
+    username = request.data.get("username")
+
+    if not player_id or not username:
+        return JsonResponse({"error": "Infos manquantes"}, status=400)
+
+    player = get_object_or_404(Player, player_id=player_id, game__id=game_id)
+    player.username = username
+    player.save()
+
+    return JsonResponse({"message": "Pseudo mis à jour"})
+
+@api_view(['DELETE'])
+def leave_game(request, game_id):
+    player_id = request.COOKIES.get("playerId")
+    if not player_id:
+        return JsonResponse({"error": "Non identifié"}, status=403)
+
+    player = get_object_or_404(Player, player_id=player_id, game__id=game_id)
+    player.delete()
+
+    return JsonResponse({"message": "Joueur retiré de la partie"})
+
+@api_view(['GET'])
+def get_game_by_code(request, code):
+    try:
+        game = Game.objects.get(code=code)
+        return JsonResponse({"game_id": game.id})
+    except Game.DoesNotExist:
+        return JsonResponse({"error": "Code invalide"}, status=404)

@@ -19,7 +19,7 @@ function Home() {
     const storedGameId = Cookies.get("gameId");
     if (storedGameId) {
       setGameId(storedGameId);
-      console.log("✅ Cookie détecté au chargement :", storedGameId);
+      /* console.log("✅ Cookie détecté au chargement :", storedGameId); */
     }
   }, []);
 
@@ -27,17 +27,21 @@ function Home() {
     try {
       const response = await axios.post(
         "http://localhost:8000/api/create_game/",
-        {},  // ✅ Pas besoin d'envoyer de données
-        { withCredentials: true }  // ✅ Envoie les cookies avec la requête
+        {}, // pas besoin de body, le backend gère "Game Master"
+        { withCredentials: true } // pour que le cookie playerId soit envoyé
       );
   
       const gameId = response.data.game_id;
+  
+      // ✅ stocker le gameId dans les cookies pour usage ultérieur
       Cookies.set("gameId", gameId, { expires: 1 });
   
-      console.log("🎉 Partie créée avec succès !");
-      navigate("/manage-game");
+      // ✅ redirection vers la salle d'attente
+      navigate("/waiting-room");
+  
     } catch (error) {
       console.error("❌ Erreur lors de la création de la partie :", error);
+      alert("Erreur lors de la création de la partie. Réessaye !");
     }
   };
 
@@ -80,37 +84,12 @@ function Home() {
           <h1 className="text-4xl font-bold text-center">Jouer aux jeux de Popcorn avec ses amis</h1>
           <p className="text-center mt-4">Choisis un jeu pour commencer à jouer avec tes amis.</p>
           <div className="flex justify-center gap-4 mt-8">
-            <button className="btn btn-primary" onClick={handleShowGames}>Rejoindre une partie</button>
-            <button className="btn btn-secondary" onClick={handleCreateGame}>Créer une partie</button>
+            <button className="btn btn-primary" onClick={() => navigate("/join")}>Rejoindre une partie</button>
+            <button className="btn btn-secondary" onClick={() => navigate("/create-game")}>Créer une partie</button>
           </div>
 
           {gameId && <p className="text-center mt-4">🔥 Partie en cours : {gameId}</p>}
         </div>
-
-        {/* ✅ Liste des parties */}
-        {showGamesList && (
-          <div className="mt-6 text-center">
-            <h2 className="text-2xl font-bold">📜 Liste des parties disponibles</h2>
-            {loading ? (
-              <p>Chargement des parties...</p>
-            ) : error ? (
-              <p className="text-red-500">{error}</p>
-            ) : games.length === 0 ? (
-              <p>Aucune partie disponible.</p>
-            ) : (
-              <ul className="list-group mt-3">
-                {games.map((game) => (
-                  <li key={game.id} className="list-group-item d-flex justify-between">
-                    <span>🆔 {game.id} - 📅 {new Date(game.created_at).toLocaleString()}</span>
-                    <button className="btn btn-success" onClick={() => handleJoinGame(game.id)}>
-                      🔥 Rejoindre
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
 
         <hr className="my-8 border-gray-300" />
         <div className="flex flex-wrap gap-4 justify-center">
