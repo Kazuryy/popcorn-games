@@ -23,7 +23,7 @@ function NavLinks() {
     <>
       {/* ✅ Afficher le bouton seulement si un jeu est en cours */}
       {gameId && (
-        <Link to="/manage-game" className="btn btn-ghost">
+        <Link to="/waiting-room" className="btn btn-ghost">
           Partie en cours
         </Link>
       )}

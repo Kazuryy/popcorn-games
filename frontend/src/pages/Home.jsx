@@ -9,10 +9,6 @@ import imagemots from "../assets/les-mots-interdits.png";
 
 function Home() {
   const [gameId, setGameId] = useState(null);
-  const [games, setGames] = useState([]); // ✅ Stocke les parties
-  const [showGamesList, setShowGamesList] = useState(false); // ✅ Affiche la liste des parties
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,60 +18,6 @@ function Home() {
       /* console.log("✅ Cookie détecté au chargement :", storedGameId); */
     }
   }, []);
-
-  const handleCreateGame = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/create_game/",
-        {}, // pas besoin de body, le backend gère "Game Master"
-        { withCredentials: true } // pour que le cookie playerId soit envoyé
-      );
-  
-      const gameId = response.data.game_id;
-  
-      // ✅ stocker le gameId dans les cookies pour usage ultérieur
-      Cookies.set("gameId", gameId, { expires: 1 });
-  
-      // ✅ redirection vers la salle d'attente
-      navigate("/waiting-room");
-  
-    } catch (error) {
-      console.error("❌ Erreur lors de la création de la partie :", error);
-      alert("Erreur lors de la création de la partie. Réessaye !");
-    }
-  };
-
-  const handleShowGames = async () => {
-    setShowGamesList(true);
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.get("http://localhost:8000/api/games/");
-      setGames(response.data.games);
-    } catch (err) {
-      console.error("❌ Erreur lors du chargement des parties :", err);
-      setError("Impossible de récupérer les parties.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleJoinGame = async (gameId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8000/api/games/${gameId}/`,
-        { withCredentials: true }  // ✅ Envoie et récupère `playerId`
-      );
-  
-      Cookies.set("gameId", gameId, { expires: 1 });
-  
-      console.log("🎉 Rejoint la partie :", gameId);
-      navigate("/play");
-    } catch (error) {
-      console.error("❌ Erreur lors de la connexion à la partie :", error);
-    }
-  };
 
   return (
     <Page>

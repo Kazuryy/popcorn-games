@@ -1,7 +1,11 @@
 import React from 'react';
 
 function Tunnel() {
-  return <h1>Tunnel Game</h1>;
+  return (
+    <div className='px-4'>
+      <h1>Tunnel Game</h1>
+    </div>
+  );
 }
 
 export default Tunnel;
