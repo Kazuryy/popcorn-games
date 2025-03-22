@@ -5,11 +5,11 @@ import Team from './pages/Team';
 import Tunnel from './pages/Tunnel';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
-import ManageGame from './pages/ManageGame';
 import Play from './pages/Play';
 import Join from './pages/Join';
 import CreateGame from './pages/CreateGame';
 import WaitingRoom from './pages/WaitingRoom';
+import GameSettings from "./pages/GameSettings";
 import './App.css';
 
 function App() {
@@ -23,11 +23,11 @@ function App() {
           <Route path="/tunnel" element={<Tunnel />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/manage-game" element={<ManageGame />} />
           <Route path="/play" element={<Play />} />
           <Route path="/waiting-room" element={<WaitingRoom />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/create-game" element={<CreateGame />} />    
+          <Route path="/create-game" element={<CreateGame />} />  
+          <Route path="/game-settings" element={<GameSettings />} />  
         </Routes>
       </div>
     </Router>
