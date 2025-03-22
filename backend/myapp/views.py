@@ -12,8 +12,8 @@ def generate_unique_code():
         code = str(random.randint(100000, 999999))
         if not Game.objects.filter(code=code).exists():
             return code
-      
-        
+
+
 ### 📌 1️⃣ CRÉATION DE PARTIE (MJ)
 @api_view(['POST'])
 def create_game(request):
@@ -29,8 +29,12 @@ def create_game(request):
     # ✅ Crée la partie avec cet ID comme MJ
     game = Game.objects.create(creator_id=player_id, code=code)
 
+    username = request.data.get("username", "").strip()
+    if not username:
+        return JsonResponse({"error": "Pseudo requis"}, status=400)
+
     # ✅ Crée un joueur associé avec le pseudo "Game Master"
-    Player.objects.create(username="Game Master", player_id=player_id, game=game)
+    Player.objects.create(username=username, player_id=player_id, game=game)
 
     # ✅ Réponse avec cookie mis à jour
     response = JsonResponse({'game_id': game.id, 'code': code, 'is_master': True})
@@ -126,10 +130,11 @@ def get_or_create_player_id(request):
     )
     return response
 
+### 📌 7️⃣ LISTE DES JOUEURS DANS UNE PARTIE
 @api_view(['GET'])
 def list_players(request, game_id):
     game = get_object_or_404(Game, id=game_id)
-    players = game.players.all().values('username', 'player_id')  # ✅ player_id est requis ici
+    players = game.players.all().values("username", "player_id")
     return JsonResponse({"players": list(players)})
 
 @api_view(['POST'])

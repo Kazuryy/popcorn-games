@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import ManageGame from './pages/ManageGame';
 import Play from './pages/Play';
 import Join from './pages/Join';
+import CreateGame from './pages/CreateGame';
 import WaitingRoom from './pages/WaitingRoom';
 import './App.css';
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/play" element={<Play />} />
           <Route path="/waiting-room" element={<WaitingRoom />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/create-game" element={<CreateGame />} />    
         </Routes>
       </div>
     </Router>
