@@ -47,7 +47,6 @@ if not SECRET_KEY and DJANGO_ENV != "build":
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1')
 
 ALLOWED_HOSTS = [
-    "web.popcorn-games.orb.local",
     "localhost",
     "http://localhost:5173",
 ]
@@ -81,7 +80,8 @@ MIDDLEWARE = [
 # Configuration CORS dynamique
 if os.getenv("DJANGO_ENV") == "production":
     CORS_ALLOWED_ORIGINS = [
-        "https://play.popcorn-games.duckdns.org",  # ✅ URL de ton frontend en production
+        "https://play.popcorn-games.duckdns.org",  # ✅ URL du frontend en production
+        "http://localhost:3000",  # ✅ URL du frontend en dev
     ]
 else:
     CORS_ALLOW_ALL_ORIGINS = True  # ✅ En dev, tout est autorisé
