@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ function Profile() {
     const fetchGame = async () => {
       try {
         if (!gameId) return;
-        const response = await axios.get(
+        const response = await api.get(
           `http://localhost:8000/api/games/${gameId}/`,
           { withCredentials: true }
         );
@@ -37,7 +37,7 @@ function Profile() {
     }
 
     try {
-      await axios.put(
+      await api.put(
         `http://localhost:8000/api/games/${gameId}/update_username/`,
         { username },
         { withCredentials: true }
@@ -63,7 +63,7 @@ function Profile() {
         ? `http://localhost:8000/api/games/${gameId}/delete/`
         : `http://localhost:8000/api/games/${gameId}/leave/`;
 
-      await axios.delete(url, { withCredentials: true });
+      await api.delete(url, { withCredentials: true });
 
       Cookies.remove("gameId");
       navigate("/");

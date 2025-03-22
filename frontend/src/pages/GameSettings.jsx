@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ function GameSettings() {
 
   const handleDeleteGame = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/games/${gameId}/delete/`, {
+      await api.delete(`http://localhost:8000/api/games/${gameId}/delete/`, {
         withCredentials: true
       });
 

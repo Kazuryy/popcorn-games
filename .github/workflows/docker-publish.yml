@@ -66,12 +66,17 @@ jobs:
 
       - name: Build and push frontend Docker image
         run: |
-            IMAGE_NAME=finnick5/popcorn-games-frontend
-            VERSION=${{ env.FRONTEND_VERSION }}
-
-            echo "Building frontend image: $IMAGE_NAME:$VERSION and $IMAGE_NAME:latest"
-
-            docker build -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest -f ./frontend/dockerfile ./frontend
-
-            docker push $IMAGE_NAME:$VERSION
-            docker push $IMAGE_NAME:latest
+          IMAGE_NAME=finnick5/popcorn-games-frontend
+          VERSION=${{ env.FRONTEND_VERSION }}
+          VITE_API_URL=http://backend:8000
+      
+          echo "Building frontend image: $IMAGE_NAME:$VERSION and $IMAGE_NAME:latest with VITE_API_URL=$VITE_API_URL"
+      
+          docker build \
+            --build-arg VITE_API_URL=$VITE_API_URL \
+            -t $IMAGE_NAME:$VERSION \
+            -t $IMAGE_NAME:latest \
+            -f ./frontend/dockerfile ./frontend
+      
+          docker push $IMAGE_NAME:$VERSION
+          docker push $IMAGE_NAME:latest

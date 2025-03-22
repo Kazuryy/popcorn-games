@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ function CreateGame() {
         }
 
         try {
-            const response = await axios.post(
+            const response = await api.post(
                 "http://localhost:8000/api/create_game/",
                 { username },
                 { withCredentials: true }

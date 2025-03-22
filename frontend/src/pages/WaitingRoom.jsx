@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ function WaitingRoom() {
 
     const fetchGame = async () => {
       try {
-        const gameRes = await axios.get(`http://localhost:8000/api/games/${gameId}/`, {
+        const gameRes = await api.get(`http://localhost:8000/api/games/${gameId}/`, {
           withCredentials: true
         });
 
@@ -39,7 +39,7 @@ function WaitingRoom() {
 
     const fetchPlayers = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/games/${gameId}/players/`, {
+        const response = await api.get(`http://localhost:8000/api/games/${gameId}/players/`, {
           withCredentials: true
         });
         setPlayers(response.data.players);

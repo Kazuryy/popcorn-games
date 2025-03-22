@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -22,7 +22,7 @@ function Play() {
         }
       
         try {
-          await axios.post(
+          await api.post(
             `http://localhost:8000/api/games/${gameId}/join/`,
             { username },
             { withCredentials: true }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../lib/api";
 
 const ListGames = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const ListGames = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://localhost:8000/api/games/");
+      const response = await api.get("http://localhost:8000/api/games/");
       setGames(response.data.games);
     } catch (err) {
       console.error("❌ Erreur lors du chargement des parties :", err);

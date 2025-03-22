@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ function JoinGame() {
         }
 
         try {
-            const response = await axios.get(
+            const response = await api.get(
                 `http://localhost:8000/api/games/by-code/${code}/`,
                 { withCredentials: true }
             );
