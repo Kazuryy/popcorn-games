@@ -12,7 +12,7 @@ const ListGames = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://localhost:8000/api/games/");
+      const response = await axios.get("/api/games/");
       setGames(response.data.games);
     } catch (err) {
       console.error("❌ Erreur lors du chargement des parties :", err);

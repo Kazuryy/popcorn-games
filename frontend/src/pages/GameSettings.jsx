@@ -9,7 +9,7 @@ function GameSettings() {
 
   const handleDeleteGame = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/games/${gameId}/delete/`, {
+      await axios.delete(`/api/games/${gameId}/delete/`, {
         withCredentials: true
       });
 

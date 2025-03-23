@@ -20,7 +20,7 @@ function WaitingRoom() {
 
     const fetchGame = async () => {
       try {
-        const gameRes = await axios.get(`http://localhost:8000/api/games/${gameId}/`, {
+        const gameRes = await axios.get(`/api/games/${gameId}/`, {
           withCredentials: true
         });
 
@@ -39,7 +39,7 @@ function WaitingRoom() {
 
     const fetchPlayers = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/games/${gameId}/players/`, {
+        const response = await axios.get(`/api/games/${gameId}/players/`, {
           withCredentials: true
         });
         setPlayers(response.data.players);

@@ -23,7 +23,7 @@ function Play() {
       
         try {
           await axios.post(
-            `http://localhost:8000/api/games/${gameId}/join/`,
+            `/api/games/${gameId}/join/`,
             { username },
             { withCredentials: true }
           );

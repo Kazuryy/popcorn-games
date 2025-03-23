@@ -16,7 +16,7 @@ function Profile() {
       try {
         if (!gameId) return;
         const response = await axios.get(
-          `http://localhost:8000/api/games/${gameId}/`,
+          `/api/games/${gameId}/`,
           { withCredentials: true }
         );
         setIsMaster(response.data.is_master);
@@ -38,7 +38,7 @@ function Profile() {
 
     try {
       await axios.put(
-        `http://localhost:8000/api/games/${gameId}/update_username/`,
+        `/api/games/${gameId}/update_username/`,
         { username },
         { withCredentials: true }
       );
@@ -60,8 +60,8 @@ function Profile() {
 
     try {
       const url = isMaster
-        ? `http://localhost:8000/api/games/${gameId}/delete/`
-        : `http://localhost:8000/api/games/${gameId}/leave/`;
+        ? `/api/games/${gameId}/delete/`
+        : `/api/games/${gameId}/leave/`;
 
       await axios.delete(url, { withCredentials: true });
 
