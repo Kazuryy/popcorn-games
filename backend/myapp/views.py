@@ -2,6 +2,7 @@ import uuid
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 from django.http import JsonResponse
 from .models import Game, Player
 import random
@@ -40,8 +41,10 @@ def create_game(request):
     response = JsonResponse({'game_id': game.id, 'code': code, 'is_master': True})
     response.set_cookie(
         "playerId", player_id,
-        max_age=604800,  # 7 jours
-        secure=True, httponly=True, samesite="Lax"
+        max_age=12 * 60 * 60,
+        secure=False if settings.DEBUG else True,  # ⚠️ Active pour HTTPS uniquement 
+        httponly=True,
+        samesite="Lax"
     )
     return response
 
@@ -98,8 +101,10 @@ def get_game(request, game_id):
     # ✅ Stocke `playerId` dans un cookie sécurisé
     response.set_cookie(
         "playerId", player_id,
-        max_age=7 * 24 * 60 * 60,
-        secure=True, httponly=True, samesite="Lax"
+        max_age=12 * 60 * 60,
+        secure=False if settings.DEBUG else True,  # ⚠️ Active pour HTTPS uniquement 
+        httponly=True, 
+        samesite="Lax"
     )
     
     return response
@@ -123,8 +128,8 @@ def get_or_create_player_id(request):
     response.set_cookie(
         "playerId",
         player_id,
-        max_age=7 * 24 * 60 * 60,  # 7 jours
-        secure=True,  # ⚠️ Active pour HTTPS uniquement
+        max_age=12 * 60 * 60,
+        secure=False if settings.DEBUG else True,  # ⚠️ Active pour HTTPS uniquement
         httponly=True,  # 🚀 Empêche JavaScript d'accéder au cookie (protection XSS)
         samesite="Lax",  # 🔒 Protection CSRF
     )
@@ -157,8 +162,10 @@ def join_game(request, game_id):
     response = JsonResponse({"message": "Joueur ajouté"})
     response.set_cookie(
         "playerId", player_id,
-        max_age=7 * 24 * 60 * 60,
-        secure=True, httponly=True, samesite="Lax"
+        max_age=12 * 60 * 60,
+        secure=False if settings.DEBUG else True,
+        httponly=True,
+        samesite="Lax"
     )
     return response
 

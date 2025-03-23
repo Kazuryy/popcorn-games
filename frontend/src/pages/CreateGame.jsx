@@ -21,7 +21,7 @@ function CreateGame() {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/create_game/",
+                "/api/create_game/",
                 { username },
                 { withCredentials: true }
             );
@@ -32,7 +32,7 @@ function CreateGame() {
             navigate("/waiting-room");
 
         } catch (err) {
-            console.error("❌ Erreur lors de la création :", err);
+            console.error("❌ Erreur lors de la création :", err.response?.data || err.message);
             setError("Impossible de créer la partie. Réessaie.");
         }
     };
