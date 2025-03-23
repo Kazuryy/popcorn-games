@@ -49,6 +49,8 @@ DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1')
 ALLOWED_HOSTS = [
     "localhost",
     "http://localhost:5173",
+    "https://play.popcorn-games.duckdns.org",
+    "play.popcorn-games.duckdns.org",
 ]
 
 
