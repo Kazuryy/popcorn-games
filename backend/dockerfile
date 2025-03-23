@@ -11,11 +11,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Étape 4 : Copier le code backend
 COPY . .
 
-# Étape 5 : Collecte des fichiers statiques
-RUN python manage.py collectstatic --noinput
+# Étape 5 : Rendre le script exécutable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Étape 6 : Exposer le port 8000
 EXPOSE 8000
 
-# Étape 7 : Lancer Gunicorn avec le bon chemin WSGI
-CMD ["gunicorn", "--chdir", "/app", "--bind", "0.0.0.0:8000", "myapp.wsgi:application"]
+# Étape 7 : Utiliser le script comme point d'entrée
+CMD ["/entrypoint.sh"]
