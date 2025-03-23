@@ -16,7 +16,7 @@ function JoinGame() {
 
         try {
             const response = await axios.get(
-                `http://localhost:8000/api/games/by-code/${code}/`,
+                `/api/games/by-code/${code}/`,
                 { withCredentials: true }
             );
 
