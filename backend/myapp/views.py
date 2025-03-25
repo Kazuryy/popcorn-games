@@ -2,9 +2,11 @@ import uuid
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.http import JsonResponse
 from .models import Game, Player
+import json
 import random
 
 
@@ -201,3 +203,30 @@ def get_game_by_code(request, code):
         return JsonResponse({"game_id": game.id})
     except Game.DoesNotExist:
         return JsonResponse({"error": "Code invalide"}, status=404)
+
+@csrf_exempt
+def kick_player(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        game_code = data.get('game_code')
+        player_id = data.get('player_id')
+        requester_id = data.get('requester_id')
+
+        try:
+            game = Game.objects.get(code=game_code)
+        except Game.DoesNotExist:
+            return JsonResponse({'error': 'Partie non trouvée'}, status=404)
+
+        # Vérifie que c'est bien le MJ qui fait la requête
+        if game.creator_id != requester_id:
+            return JsonResponse({'error': 'Seul le MJ peut kicker un joueur'}, status=403)
+
+        try:
+            player = Player.objects.get(player_id=player_id, game=game)
+        except Player.DoesNotExist:
+            return JsonResponse({'error': 'Joueur non trouvé'}, status=404)
+
+        player.delete()  # supprime le joueur de la partie
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)

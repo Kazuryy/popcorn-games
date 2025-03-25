@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import create_game, delete_game, list_games, get_game, get_game_from_cookie, get_or_create_player_id, list_players, join_game, leave_game, update_username, get_game_by_code
+from .views import create_game, delete_game, list_games, get_game, get_game_from_cookie, get_or_create_player_id, list_players, join_game, leave_game, update_username, get_game_by_code, kick_player
 
 urlpatterns = [
     path("api/create_game/", create_game, name="create_game"),
@@ -13,4 +13,5 @@ urlpatterns = [
     path("api/games/<int:game_id>/update_username/", update_username),
     path("api/games/<int:game_id>/leave/", leave_game),
     path("api/games/by-code/<str:code>/", get_game_by_code),
+    path('api/kick/', kick_player, name='kick_joueur'),
 ]
