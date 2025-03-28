@@ -13,5 +13,5 @@ urlpatterns = [
     path("api/games/<int:game_id>/update_username/", update_username),
     path("api/games/<int:game_id>/leave/", leave_game),
     path("api/games/by-code/<str:code>/", get_game_by_code),
-    path('api/kick/', kick_player, name='kick_joueur'),
+    path('api/kick/', kick_player, name='kick-player'),
 ]

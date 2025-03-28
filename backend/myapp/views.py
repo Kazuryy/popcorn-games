@@ -204,29 +204,23 @@ def get_game_by_code(request, code):
     except Game.DoesNotExist:
         return JsonResponse({"error": "Code invalide"}, status=404)
 
-@csrf_exempt
+@api_view(['POST'])
 def kick_player(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        game_code = data.get('game_code')
-        player_id = data.get('player_id')
-        requester_id = data.get('requester_id')
+    player_id = request.data.get('player_id')
+    game_code = request.data.get('game_code')
 
-        try:
-            game = Game.objects.get(code=game_code)
-        except Game.DoesNotExist:
-            return JsonResponse({'error': 'Partie non trouvée'}, status=404)
+    game = Game.objects.filter(code=game_code).first()
+    if not game:
+        return Response({"detail": "Game not found"}, status=404)
 
-        # Vérifie que c'est bien le MJ qui fait la requête
-        if game.creator_id != requester_id:
-            return JsonResponse({'error': 'Seul le MJ peut kicker un joueur'}, status=403)
+    player = Player.objects.filter(id=player_id, game=game).first()
+    if not player:
+        return Response({"detail": "Player not found"}, status=404)
 
-        try:
-            player = Player.objects.get(player_id=player_id, game=game)
-        except Player.DoesNotExist:
-            return JsonResponse({'error': 'Joueur non trouvé'}, status=404)
+    if request.user != game.game_master:
+        return Response({"detail": "Only the Game Master can kick players"}, status=403)
 
-        player.delete()  # supprime le joueur de la partie
-        return JsonResponse({'success': True})
-    
-    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+    player.is_kicked = True
+    player.save()
+
+    return Response({"detail": "Player has been kicked successfully"})
