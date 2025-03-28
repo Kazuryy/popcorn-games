@@ -2,7 +2,7 @@
 
 Dans ce projet, nous allons développer un site web de type SAAS pour reproduire les jeux présentés dans l'émission Popcorn de Domingo.
 
-Lien pour visualiser à quoi ça ressemble : [([play.popcorn-games](<https://play.popcorn-games.duckdns.org>))]
+Lien pour visualiser à quoi ça ressemble : [play.popcorn-games](<https://play.popcorn-games.duckdns.org>)
 
 ## Fonctionnalités
 
