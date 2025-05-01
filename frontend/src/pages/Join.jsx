@@ -5,16 +5,25 @@ import { useNavigate } from 'react-router-dom';
 
 function JoinGame() {
     const [code, setCode] = useState('');
+    const [username, setUsername] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleValidateCode = async () => {
+        setError('');
+
         if (!/^\d{6}$/.test(code)) {
             setError("Veuillez entrer un code à 6 chiffres.");
             return;
         }
 
+        if (!username.trim()) {
+            setError("Veuillez entrer un pseudo.");
+            return;
+        }
+
         try {
+            // 1️⃣ On récupère le gameId à partir du code
             const response = await axios.get(
                 `/api/games/by-code/${code}/`,
                 { withCredentials: true }
@@ -22,6 +31,15 @@ function JoinGame() {
 
             const gameId = response.data.game_id;
             Cookies.set("gameId", gameId, { expires: 1 });
+
+            // 2️⃣ On envoie le pseudo pour rejoindre la partie
+            await axios.post(
+                `/api/games/${gameId}/join/`,
+                { username },
+                { withCredentials: true }
+            );
+
+            // 3️⃣ Redirection vers la salle d’attente
             navigate("/play");
         } catch (err) {
             console.error(err);
@@ -39,20 +57,31 @@ function JoinGame() {
                 </label>
                 <input
                     type="text"
-                    name='pseudo'
-                    id='pseudo'
-                    inputMode="numeric"
-                    pattern="[0-9]*"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     maxLength={6}
-                    className="input input-bordered w-full"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    className="input input-bordered w-full mb-4"
                     placeholder="Ex: 123456"
                     autoComplete="off"
                 />
 
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Pseudo :
+                </label>
+                <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    maxLength={20}
+                    className="input input-bordered w-full"
+                    placeholder="Ex: SuperJoueur"
+                    autoComplete="off"
+                />
+
                 <button className="btn btn-primary w-full mt-4" onClick={handleValidateCode}>
-                    Valider le code
+                    Rejoindre la partie
                 </button>
 
                 {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}

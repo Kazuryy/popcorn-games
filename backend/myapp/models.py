@@ -12,6 +12,7 @@ class Player(models.Model):
     username = models.CharField(max_length=100)
     player_id = models.CharField(max_length=100, default='unknown')  # lié au cookie
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='players')
+    est_kicke = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Player {self.username} - ID {self.player_id} - Game {self.game_id}"
+        return f"Player {self.username} - ID {self.player_id} - Game {self.game_id} - Kicke: {self.est_kicke}"

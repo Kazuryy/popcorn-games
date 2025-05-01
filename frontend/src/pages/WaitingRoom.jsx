@@ -8,15 +8,54 @@ function WaitingRoom() {
   const [creatorId, setCreatorId] = useState(null);
   const [code, setCode] = useState(null);
   const [isMaster, setIsMaster] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   const navigate = useNavigate();
   const gameId = Cookies.get("gameId");
+
+  const kickPlayer = async (playerId) => {
+    try {
+      const res = await fetch(`/api/kick/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // ✅ envoie les cookies (playerId)
+        body: JSON.stringify({
+          game_code: code,
+          player_id: playerId,
+          requester_id: currentUserId,
+        }),
+      });
+  
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Erreur brute :", errorText);
+        throw new Error(`Échec du kick : ${res.status}`);
+      }
+  
+      const data = await res.json();
+  
+      if (data.success) {
+        const response = await axios.get(`/api/games/${gameId}/players/`, {
+          withCredentials: true,
+        });
+        setPlayers(response.data.players);
+      } else {
+        alert(data.error || "Une erreur est survenue.");
+      }
+    } catch (err) {
+      console.error("Erreur lors du kick :", err);
+      alert(`Erreur lors du kick : ${err.message}`);
+    }
+  };
 
   useEffect(() => {
     if (!gameId) {
       navigate('/');
       return;
     }
+
+    const userId = Cookies.get("userId");
+    setCurrentUserId(userId);
 
     const fetchGame = async () => {
       try {
@@ -43,6 +82,17 @@ function WaitingRoom() {
           withCredentials: true
         });
         setPlayers(response.data.players);
+
+        // 👇 Si le joueur a été kické
+        if (userId && response.data.players.length > 0) {
+          const stillHere = response.data.players.find(p => p.player_id === userId);
+          if (!stillHere) {
+            Cookies.remove("gameId");
+            alert("Vous avez été expulsé de la partie.");
+            navigate('/');
+          }
+        }
+
       } catch (error) {
         console.error("Erreur lors de la récupération des joueurs :", error);
       }
@@ -78,12 +128,12 @@ function WaitingRoom() {
           <div className="text-green-600 text-sm font-medium text-center mb-2">
             🧙‍♂️ Vous êtes le Maître du Jeu
             <div className="text-center mt-6">
-                <button
+              <button
                 className="btn btn-outline btn-warning"
                 onClick={() => navigate('/game-settings')}
-                >
+              >
                 ⚙️ Paramètres de la partie
-                </button>
+              </button>
             </div>
           </div>
         )}
@@ -108,9 +158,19 @@ function WaitingRoom() {
             {others.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {others.map((player, i) => (
-                  <div key={i} className="bg-gray-100 rounded-md p-3 shadow-sm flex items-center gap-2">
-                    <span className="text-gray-500">🎮</span>
-                    <span className="text-sm font-medium text-gray-800">{player.username}</span>
+                  <div key={i} className="bg-gray-100 rounded-md p-3 shadow-sm flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">🎮</span>
+                      <span className="text-sm font-medium text-gray-800">{player.username}</span>
+                    </div>
+                    {isMaster && (
+                      <button
+                        onClick={() => kickPlayer(player.player_id)}
+                        className="text-red-500 text-xs hover:underline"
+                      >
+                        ❌ Kick
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

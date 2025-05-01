@@ -2,6 +2,7 @@ import uuid
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.http import JsonResponse
 from .models import Game, Player
@@ -201,3 +202,24 @@ def get_game_by_code(request, code):
         return JsonResponse({"game_id": game.id})
     except Game.DoesNotExist:
         return JsonResponse({"error": "Code invalide"}, status=404)
+
+@api_view(['POST'])
+def kick_player(request):
+    player_id = request.data.get('player_id')
+    game_code = request.data.get('game_code')
+
+    game = Game.objects.filter(code=game_code).first()
+    if not game:
+        return Response({"detail": "Game not found"}, status=404)
+
+    player = Player.objects.filter(id=player_id, game=game).first()
+    if not player:
+        return Response({"detail": "Player not found"}, status=404)
+
+    if request.user != game.game_master:
+        return Response({"detail": "Only the Game Master can kick players"}, status=403)
+
+    player.is_kicked = True
+    player.save()
+
+    return Response({"detail": "Player has been kicked successfully"})
