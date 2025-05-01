@@ -3,7 +3,7 @@ name: Build and Push Docker Image to Docker Hub
 on:
   push:
     branches:
-      - main  # Exécute le workflow à chaque push sur la branche main
+      - production  # Exécute le workflow à chaque push sur la branche production
 
 jobs:
   build-and-push:
